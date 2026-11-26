@@ -9,7 +9,7 @@
 
 ## Aesthetic
 
-- Header with the wordmark ("oficina" in green, "maven" in bold black) and a rule below it
+- Header with the wordmark ("oficina" in Maven red, "maven" in bold black) and a rule below it
 - Two columns: options on the left, pom.xml preview on the right, with a vertical divider
 - Label + field rows, label aligned right, field underlined with a 3px black line
 - Radios: hollow black circle; selected becomes a green dot with green text
@@ -23,9 +23,10 @@
 ## Color
 
 - fundo #ffffff | texto #1b1f23 | apagado #5e6670 | linha #dde5e5
-- verde #5fa134 (selection, focus, values in the pom) | verde-claro #e3f1d8 (field being edited)
-- barra #ebf1f1 | erro #c0262d
-- Dark: fundo #1b1f23 | texto #f1f3f4 | apagado #a3abb3 | linha #353b41 | verde #7cc24e | barra #262b30 | erro #ff7a7f
+- destaque #c22033, Maven red (selection, focus, values in the pom) | destaque-claro #fde4d2 (field being edited)
+- pena: Apache Maven feather gradient (#6d2e8c, #c22033, #e96b25, #f6a01a), used only on the rule under the header
+- barra #f3efec | erro #c0262d
+- Dark: fundo #1b1f23 | texto #f1f3f4 | apagado #a3abb3 | linha #353b41 | destaque #ff7a45 | barra #262b30 | erro #ff7a7f
 - Theme: follows the system; the sun/moon toggle in the header saves the choice in localStorage
 
 ## Changelog
@@ -34,3 +35,4 @@
 - v2: more colour
 - v3: Spring Initializr-style layout, at the user's request
 - v4: light/dark theme toggle
+- v5: Maven colours (red as the accent, feather gradient under the header)

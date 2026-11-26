@@ -4,9 +4,11 @@
   --texto: #1b1f23;
   --apagado: #5e6670;
   --linha: #dde5e5;
-  --verde: #5fa134;
-  --verde-claro: #e3f1d8;
-  --barra: #ebf1f1;
+  --destaque: #c22033;
+  --destaque-claro: #fde4d2;
+  --barra: #f3efec;
+  /* Cores da pena do logo do Apache Maven. */
+  --pena: linear-gradient(90deg, #6d2e8c, #c22033 40%, #e96b25 70%, #f6a01a);
   --erro: #c0262d;
   --altura-barra: 5.5rem;
 }
@@ -19,8 +21,8 @@
     --texto: #f1f3f4;
     --apagado: #a3abb3;
     --linha: #353b41;
-    --verde: #7cc24e;
-    --verde-claro: rgb(124 194 78 / .22);
+    --destaque: #ff7a45;
+    --destaque-claro: rgb(233 107 37 / .25);
     --barra: #262b30;
     --erro: #ff7a7f;
   }
@@ -31,8 +33,8 @@
   --texto: #f1f3f4;
   --apagado: #a3abb3;
   --linha: #353b41;
-  --verde: #7cc24e;
-  --verde-claro: rgb(124 194 78 / .22);
+  --destaque: #ff7a45;
+  --destaque-claro: rgb(233 107 37 / .25);
   --barra: #262b30;
   --erro: #ff7a7f;
 }
@@ -49,7 +51,7 @@ body {
 form { max-width: 92rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2.5rem) calc(var(--altura-barra) + 2rem); }
 
 /* Cabeçalho */
-.topo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.75rem 0 1.5rem; border-bottom: 1px solid var(--linha); }
+.topo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.75rem 0 1.5rem; border-bottom: 4px solid; border-image: var(--pena) 1; }
 
 /* Alternador de tema: dois quadrados empilhados, o ativo fica preenchido. */
 .tema { display: flex; flex-direction: column; border: 2px solid var(--texto); border-radius: 2px; }
@@ -67,11 +69,11 @@ form { max-width: 92rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2.5rem) cal
 }
 .tema button + button { border-top: 2px solid var(--texto); }
 .tema button[aria-pressed="true"] { background: var(--texto); color: var(--fundo); }
-.tema button:hover:not([aria-pressed="true"]) { background: var(--verde-claro); color: var(--texto); }
+.tema button:hover:not([aria-pressed="true"]) { background: var(--destaque-claro); color: var(--texto); }
 .tema svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .tema button[data-tema="dark"] svg { fill: currentColor; stroke: none; }
 h1 { margin: 0; font-size: clamp(1.9rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -.01em; line-height: 1; }
-.marca { color: var(--verde); font-weight: 500; }
+.marca { color: var(--destaque); font-weight: 500; }
 
 /* Duas colunas com divisória vertical */
 .colunas { display: grid; grid-template-columns: minmax(0, 46rem) minmax(0, 1fr); padding-top: 2rem; }
@@ -107,7 +109,7 @@ fieldset.linha legend { float: left; width: 7.5rem; margin-right: 1.25rem; paddi
   font: inherit;
 }
 .linha input:not([type="radio"]):hover { border-bottom-color: var(--apagado); }
-.linha input:not([type="radio"]):focus { outline: none; border-bottom-color: var(--verde); }
+.linha input:not([type="radio"]):focus { outline: none; border-bottom-color: var(--destaque); }
 
 /* Rádios: círculo vazado; marcado vira bolinha verde e o texto fica verde. */
 .opcoes { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; }
@@ -121,10 +123,10 @@ fieldset.linha legend { float: left; width: 7.5rem; margin-right: 1.25rem; paddi
   border-radius: 50%;
   cursor: pointer;
 }
-.opcoes input:checked { border-color: var(--verde); background: var(--verde); }
-.opcoes label:has(:checked) { color: var(--verde); }
-.opcoes label:hover input:not(:checked) { border-color: var(--verde); }
-.opcoes input:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+.opcoes input:checked { border-color: var(--destaque); background: var(--destaque); }
+.opcoes label:has(:checked) { color: var(--destaque); }
+.opcoes label:hover input:not(:checked) { border-color: var(--destaque); }
+.opcoes input:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
 
 /* Coluna da prévia */
 .direita-topo { display: flex; align-items: center; min-height: 2.75rem; padding-bottom: .9rem; margin-bottom: 1rem; border-bottom: 1px solid var(--linha); }
@@ -139,8 +141,8 @@ pre {
   color: var(--texto);
   font: .82rem/1.7 "JetBrains Mono", ui-monospace, monospace;
 }
-pre mark { padding: 0 .1em; border-radius: 2px; background: transparent; color: var(--verde); font-weight: 700; transition: background-color .15s ease-out; }
-pre mark.ativo { background: var(--verde-claro); }
+pre mark { padding: 0 .1em; border-radius: 2px; background: transparent; color: var(--destaque); font-weight: 700; transition: background-color .15s ease-out; }
+pre mark.ativo { background: var(--destaque-claro); }
 
 #erro, #aviso { margin: 0 0 .75rem; font-style: italic; }
 #erro { color: var(--erro); }
@@ -173,7 +175,7 @@ button strong { font-weight: 700; }
 button:hover { background: var(--texto); color: var(--fundo); }
 button:disabled { opacity: .45; cursor: not-allowed; }
 button:disabled:hover { background: var(--fundo); color: var(--texto); }
-button:focus-visible, pre:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+button:focus-visible, pre:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
 
 @media (max-width: 60rem) {
   .colunas { grid-template-columns: minmax(0, 1fr); }
