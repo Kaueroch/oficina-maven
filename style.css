@@ -1,14 +1,19 @@
+/* Talão de ordem de serviço: formulário impresso em uma cor só (verde),
+   valores batidos à máquina, 2ª via em papel canário com a cópia em carbono. */
 :root {
   color-scheme: light;
-  --fundo: #e8ecf0;
-  --folha: #ffffff;
-  --tinta: #17202b;
-  --apagado: #596473;
-  --linha: #c8d0d9;
-  --cobalto: #2537c4;
-  --cobalto-escuro: #1a289a;
-  --marca: #ffe14d;
-  --erro: #a32019;
+  --balcao: #c7cbc4;
+  --papel: #fdfdf9;
+  --canario: #f6eba3;
+  --tinta: #0e5a52;
+  --tinta-clara: rgb(14 90 82 / .08);
+  --maquina: #1e2026;
+  --carbono: #2f3c57;
+  --numerador: #c22a2f;
+  --sombra: 0 1px 1px rgb(40 44 36 / .18), 0 10px 22px -10px rgb(40 44 36 / .45);
+
+  --fonte-impressa: "Archivo", "Arial Narrow", sans-serif;
+  --fonte-maquina: "Courier Prime", "Courier New", monospace;
 }
 
 * { box-sizing: border-box; }
@@ -16,109 +21,181 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--fundo);
-  color: var(--tinta);
-  font: 1rem/1.5 "Instrument Sans", system-ui, sans-serif;
+  background: var(--balcao);
+  color: var(--maquina);
+  font: 1rem/1.5 var(--fonte-impressa);
 }
 
-.pagina { max-width: 78rem; margin: 0 auto; padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1rem, 4vw, 3rem) 4rem; }
+.balcao { padding: clamp(1rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) 4rem; }
 
-/* Cabeçalho: a coordenada do projeto é o título de verdade da página. */
-header { margin-bottom: clamp(2rem, 4vw, 3rem); }
-h1 { margin: 0; font-size: 1.05rem; font-weight: 600; }
-header > p { max-width: 36rem; margin: .25rem 0 0; color: var(--apagado); }
-
-.coordenada {
-  margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
-  font: 500 clamp(1.5rem, 4.4vw, 3.4rem)/1.15 "JetBrains Mono", ui-monospace, monospace;
-  letter-spacing: -.03em;
-  overflow-wrap: anywhere;
+/* As duas vias lado a lado; a 2ª fica um pouco mais baixa, como folha destacada. */
+.talao {
+  display: grid;
+  grid-template-columns: minmax(0, 34rem) minmax(0, 40rem);
+  justify-content: center;
+  align-items: start;
+  gap: clamp(1rem, 3vw, 2.5rem);
 }
-.coordenada mark { padding: 0 .08em; border-radius: 2px; background: transparent; color: inherit; text-decoration: none; }
-.coordenada mark.ativo { background: var(--marca); }
-.dois-pontos { color: var(--cobalto); }
 
-/* Formulário à esquerda, folha do pom.xml à direita. */
-form { display: grid; grid-template-columns: minmax(0, 25rem) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
-
-.campos { display: grid; gap: 2rem; }
-h2 { margin: 0 0 .9rem; font-size: 1rem; font-weight: 600; }
-.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem; }
-.inteiro, fieldset { grid-column: 1 / -1; }
-
-.campo label, legend { display: block; margin-bottom: .3rem; padding: 0; color: var(--apagado); font-size: .875rem; }
-.campo input {
-  width: 100%;
-  padding: .6rem .7rem;
-  background: var(--folha);
-  border: 1px solid var(--linha);
-  border-radius: 4px;
-  color: var(--tinta);
-  font: inherit;
+.via {
+  position: relative;
+  padding: 2.25rem clamp(1rem, 3vw, 1.75rem) 1.75rem;
+  box-shadow: var(--sombra);
 }
-.campo input:hover { border-color: var(--apagado); }
-.campo input:focus { outline: 2px solid var(--cobalto); outline-offset: -1px; border-color: var(--cobalto); }
+/* Picote no topo de cada via. */
+.via::before {
+  content: "";
+  position: absolute;
+  inset: .85rem 0 auto;
+  border-top: 2px dotted rgb(30 32 38 / .28);
+}
+.via-1 { background: var(--papel); }
+.via-2 { margin-top: 3rem; background: var(--canario); position: sticky; top: 1.5rem; display: flex; flex-direction: column; max-height: calc(100vh - 3rem); }
 
-fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
-.segmentos { display: flex; border: 1px solid var(--linha); border-radius: 4px; background: var(--folha); overflow: hidden; }
-.segmentos label { position: relative; flex: 1; padding: .5rem 0; text-align: center; cursor: pointer; font-variant-numeric: tabular-nums; }
-.segmentos label + label { border-left: 1px solid var(--linha); }
-.segmentos input { position: absolute; opacity: 0; }
-.segmentos label:hover { background: #f2f4f7; }
-.segmentos label:has(:checked) { background: var(--tinta); color: var(--folha); font-weight: 600; }
-.segmentos label:has(:focus-visible) { outline: 2px solid var(--cobalto); outline-offset: -2px; }
-
-/* A folha impressa do pom.xml. */
-.painel {
-  position: sticky;
-  top: 1.5rem;
+/* Cabeçalho impresso da gráfica */
+.cabecalho {
   display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 3rem);
-  background: var(--folha);
-  border: 1px solid var(--linha);
-  border-radius: 2px;
-  box-shadow: 0 2px 0 var(--linha);
-}
-.painel-topo { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; padding: .75rem .75rem .75rem 1.25rem; border-bottom: 1px solid var(--linha); }
-.painel h2 { margin: 0 auto 0 0; font: 700 .9rem "JetBrains Mono", ui-monospace, monospace; }
-
-button {
-  padding: .5rem .95rem;
-  border: 1px solid var(--linha);
-  border-radius: 4px;
-  background: var(--folha);
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-bottom: .75rem;
+  border-bottom: 3px solid var(--tinta);
   color: var(--tinta);
-  font: 600 .9rem "Instrument Sans", system-ui, sans-serif;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 5vw, 2.6rem);
+  font-weight: 800;
+  font-stretch: 68%;
+  line-height: .95;
+  letter-spacing: -.01em;
+}
+.tipo { margin: .3rem 0 0; font-weight: 600; font-stretch: 85%; }
+.numero {
+  margin: 0;
+  color: var(--numerador);
+  font: 700 1.35rem/1 var(--fonte-maquina);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.instrucao { margin: .9rem 0 1.25rem; color: var(--tinta); font-size: .9rem; font-stretch: 90%; }
+
+/* Grade de células do formulário: linhas de tinta, rótulo pequeno no canto. */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1.5px solid var(--tinta);
+  border-left: 1.5px solid var(--tinta);
+}
+.celula {
+  min-width: 0;
+  margin: 0;
+  padding: .4rem .6rem .5rem;
+  border: 0;
+  border-right: 1.5px solid var(--tinta);
+  border-bottom: 1.5px solid var(--tinta);
+}
+.larga { grid-column: span 3; }
+.dupla { grid-column: span 2; }
+.celula:focus-within { background: var(--tinta-clara); }
+
+.celula > label, legend {
+  display: block;
+  padding: 0;
+  color: var(--tinta);
+  font-size: .78rem;
+  font-weight: 600;
+  font-stretch: 85%;
+}
+legend { float: left; width: 100%; }
+
+.celula input:not([type="radio"]) {
+  width: 100%;
+  padding: .2rem 0 0;
+  background: transparent;
+  border: 0;
+  color: var(--maquina);
+  font: 1.05rem/1.4 var(--fonte-maquina);
+}
+.celula input:not([type="radio"]):focus { outline: none; }
+.celula:has(input:not([type="radio"]):focus-visible) { box-shadow: inset 0 0 0 2px var(--tinta); }
+
+/* Quadradinhos impressos; o marcado leva um X batido à máquina. */
+.opcoes { clear: both; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding-top: .3rem; }
+.opcoes label { display: inline-flex; align-items: center; gap: .4rem; min-height: 2rem; font: 1.05rem var(--fonte-maquina); cursor: pointer; }
+.opcoes input {
+  appearance: none;
+  display: grid;
+  place-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  border: 1.5px solid var(--tinta);
+  background: var(--papel);
   cursor: pointer;
 }
-button:hover { border-color: var(--tinta); }
-button[type="submit"] { border-color: var(--cobalto); background: var(--cobalto); color: #fff; }
-button[type="submit"]:hover { border-color: var(--cobalto-escuro); background: var(--cobalto-escuro); }
-button:disabled { opacity: .45; cursor: not-allowed; }
-button:focus-visible, pre:focus-visible { outline: 2px solid var(--cobalto); outline-offset: 2px; }
+.opcoes input::after { content: "X"; font: 700 1rem/1 var(--fonte-maquina); color: var(--maquina); opacity: 0; }
+.opcoes input:checked::after { opacity: 1; }
+.opcoes label:hover input { background: var(--tinta-clara); }
+.opcoes input:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 
+/* 2ª via */
+.via-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: .75rem 1rem; padding-bottom: .75rem; border-bottom: 3px solid var(--tinta); }
+h2 { margin: 0; color: var(--tinta); font-size: 1.15rem; font-weight: 800; font-stretch: 75%; }
+.coordenada { margin: .2rem 0 0; color: var(--carbono); font: .9rem var(--fonte-maquina); overflow-wrap: anywhere; }
+.coordenada mark { background: transparent; color: inherit; }
+.coordenada mark.ativo { color: var(--maquina); font-weight: 700; text-decoration: underline 2px var(--numerador); text-underline-offset: 3px; }
+.acoes { display: flex; gap: .5rem; }
+
+button {
+  min-height: 2.5rem;
+  padding: .45rem 1rem;
+  border: 1.5px solid var(--tinta);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--tinta);
+  font: 700 .95rem var(--fonte-impressa);
+  font-stretch: 90%;
+  cursor: pointer;
+}
+button:hover { background: rgb(14 90 82 / .1); }
+button:active { transform: translateY(1px); }
+button[type="submit"] { background: var(--tinta); color: var(--papel); }
+button[type="submit"]:hover { background: #0a4740; }
+button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+button:focus-visible, pre:focus-visible { outline: 2px solid var(--maquina); outline-offset: 2px; }
+
+/* A cópia em carbono: um pouco borrada e azulada; os valores saem mais fortes. */
 pre {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  margin: 0;
-  padding: 1.25rem 1.25rem 1.5rem;
-  color: #2f3a48;
-  font: .82rem/1.75 "JetBrains Mono", ui-monospace, monospace;
+  margin: 1rem 0 0;
+  color: var(--carbono);
+  font: .85rem/1.75 var(--fonte-maquina);
+  text-shadow: 0 0 .6px rgb(47 60 87 / .6);
 }
-/* Os valores do formulário aparecem grifados no pom.xml, como marca-texto. */
-pre mark { background: transparent; color: var(--tinta); font-weight: 700; box-shadow: inset 0 -.35em 0 rgb(255 225 77 / .55); transition: box-shadow .15s; }
-pre mark.ativo { box-shadow: inset 0 -1.2em 0 var(--marca); }
+pre mark { padding: 0 .15em; border-radius: 1em; background: transparent; color: var(--maquina); font-weight: 700; transition: box-shadow .15s ease-out; }
+/* O campo em edição aparece circulado a caneta vermelha na via. */
+pre mark.ativo { box-shadow: 0 0 0 1.5px var(--numerador); }
 
-#erro, #aviso { margin: 0; padding: .6rem 1.25rem; border-bottom: 1px solid var(--linha); font-size: .9rem; }
-#erro { color: var(--erro); background: #fdf0ef; }
-#aviso { color: var(--apagado); }
+#erro, #aviso { margin: .75rem 0 0; font-size: .95rem; }
+#erro { color: var(--numerador); font-weight: 700; }
+#aviso { color: var(--tinta); font-weight: 600; }
 #erro:empty, #aviso:empty { display: none; }
 
-@media (max-width: 56rem) {
-  form { grid-template-columns: minmax(0, 1fr); }
-  .painel { position: static; max-height: none; }
-  pre { max-height: 28rem; }
+@media (max-width: 62rem) {
+  .talao { grid-template-columns: minmax(0, 40rem); }
+  .via-2 { position: static; margin-top: 0; max-height: none; }
+  pre { max-height: 30rem; }
 }
-@media (prefers-reduced-motion: reduce) { pre mark { transition: none; } }
+@media (max-width: 30rem) {
+  .grade { grid-template-columns: minmax(0, 1fr); }
+  .larga, .dupla { grid-column: auto; }
+  .cabecalho { flex-direction: column; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  pre mark { transition: none; }
+  button:active { transform: none; }
+}
