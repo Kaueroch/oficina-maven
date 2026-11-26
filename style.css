@@ -1,16 +1,20 @@
-/* Talão de ordem de serviço: formulário impresso em uma cor só (verde),
-   valores batidos à máquina, 2ª via em papel canário com a cópia em carbono. */
+/* Talão de ordem de serviço: impresso em tinta vermelha, valores batidos à máquina,
+   vias coloridas (amarela, rosa, azul) e marca-texto verde fluorescente. */
 :root {
   color-scheme: light;
-  --balcao: #c7cbc4;
-  --papel: #fdfdf9;
-  --canario: #f6eba3;
-  --tinta: #0e5a52;
-  --tinta-clara: rgb(14 90 82 / .08);
+  --balcao: #11727b;
+  --papel: #fffefa;
+  --canario: #ffe866;
+  --rosa: #ffb3c7;
+  --azul: #9fd6f7;
+  --tinta: #c41f2b;
+  --tinta-escura: #9c1520;
+  --tinta-clara: rgb(196 31 43 / .08);
   --maquina: #1e2026;
-  --carbono: #2f3c57;
-  --numerador: #c22a2f;
-  --sombra: 0 1px 1px rgb(40 44 36 / .18), 0 10px 22px -10px rgb(40 44 36 / .45);
+  --carbono: #283a63;
+  --numerador: #0b6ea8;
+  --marca-texto: #b8f53d;
+  --sombra: 0 2px 3px rgb(4 40 44 / .3), 0 16px 28px -12px rgb(4 40 44 / .6);
 
   --fonte-impressa: "Archivo", "Arial Narrow", sans-serif;
   --fonte-maquina: "Courier Prime", "Courier New", monospace;
@@ -50,7 +54,17 @@ body {
   border-top: 2px dotted rgb(30 32 38 / .28);
 }
 .via-1 { background: var(--papel); }
-.via-2 { margin-top: 3rem; background: var(--canario); position: sticky; top: 1.5rem; display: flex; flex-direction: column; max-height: calc(100vh - 3rem); }
+.via-2 {
+  position: sticky;
+  top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 3rem - 14px);
+  margin: 3rem 14px 0 0;
+  background: var(--canario);
+  /* 3ª via rosa e 4ª via azul, levemente desalinhadas atrás da amarela. */
+  box-shadow: 7px 7px 0 var(--rosa), 14px 14px 0 var(--azul), var(--sombra);
+}
 
 /* Cabeçalho impresso da gráfica */
 .cabecalho {
@@ -58,9 +72,10 @@ body {
   justify-content: space-between;
   align-items: flex-end;
   gap: 1rem;
-  padding-bottom: .75rem;
-  border-bottom: 3px solid var(--tinta);
-  color: var(--tinta);
+  margin: 0 calc(-1 * clamp(1rem, 3vw, 1.75rem));
+  padding: .85rem clamp(1rem, 3vw, 1.75rem);
+  background: var(--tinta);
+  color: var(--papel);
 }
 h1 {
   margin: 0;
@@ -73,6 +88,8 @@ h1 {
 .tipo { margin: .3rem 0 0; font-weight: 600; font-stretch: 85%; }
 .numero {
   margin: 0;
+  padding: .3rem .5rem;
+  background: var(--papel);
   color: var(--numerador);
   font: 700 1.35rem/1 var(--fonte-maquina);
   font-variant-numeric: tabular-nums;
@@ -137,6 +154,7 @@ legend { float: left; width: 100%; }
 }
 .opcoes input::after { content: "X"; font: 700 1rem/1 var(--fonte-maquina); color: var(--maquina); opacity: 0; }
 .opcoes input:checked::after { opacity: 1; }
+.opcoes label:has(:checked) { padding: 0 .35rem; margin: 0 -.35rem; background: var(--marca-texto); }
 .opcoes label:hover input { background: var(--tinta-clara); }
 .opcoes input:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
 
@@ -145,7 +163,7 @@ legend { float: left; width: 100%; }
 h2 { margin: 0; color: var(--tinta); font-size: 1.15rem; font-weight: 800; font-stretch: 75%; }
 .coordenada { margin: .2rem 0 0; color: var(--carbono); font: .9rem var(--fonte-maquina); overflow-wrap: anywhere; }
 .coordenada mark { background: transparent; color: inherit; }
-.coordenada mark.ativo { color: var(--maquina); font-weight: 700; text-decoration: underline 2px var(--numerador); text-underline-offset: 3px; }
+.coordenada mark.ativo { background: var(--marca-texto); color: var(--maquina); }
 .acoes { display: flex; gap: .5rem; }
 
 button {
@@ -159,10 +177,10 @@ button {
   font-stretch: 90%;
   cursor: pointer;
 }
-button:hover { background: rgb(14 90 82 / .1); }
+button:hover { background: var(--tinta-clara); }
 button:active { transform: translateY(1px); }
 button[type="submit"] { background: var(--tinta); color: var(--papel); }
-button[type="submit"]:hover { background: #0a4740; }
+button[type="submit"]:hover { border-color: var(--tinta-escura); background: var(--tinta-escura); }
 button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 button:focus-visible, pre:focus-visible { outline: 2px solid var(--maquina); outline-offset: 2px; }
 
@@ -176,18 +194,19 @@ pre {
   font: .85rem/1.75 var(--fonte-maquina);
   text-shadow: 0 0 .6px rgb(47 60 87 / .6);
 }
-pre mark { padding: 0 .15em; border-radius: 1em; background: transparent; color: var(--maquina); font-weight: 700; transition: box-shadow .15s ease-out; }
-/* O campo em edição aparece circulado a caneta vermelha na via. */
-pre mark.ativo { box-shadow: 0 0 0 1.5px var(--numerador); }
+pre mark { padding: 0 .1em; background: transparent; color: var(--maquina); font-weight: 700; transition: background-color .15s ease-out; }
+/* O campo em edição aparece grifado com marca-texto na via. */
+pre mark.ativo { background: var(--marca-texto); }
 
 #erro, #aviso { margin: .75rem 0 0; font-size: .95rem; }
-#erro { color: var(--numerador); font-weight: 700; }
+#erro { color: var(--tinta); font-weight: 700; }
 #aviso { color: var(--tinta); font-weight: 600; }
 #erro:empty, #aviso:empty { display: none; }
 
 @media (max-width: 62rem) {
   .talao { grid-template-columns: minmax(0, 40rem); }
   .via-2 { position: static; margin-top: 0; max-height: none; }
+  .talao { padding-bottom: 14px; }
   pre { max-height: 30rem; }
 }
 @media (max-width: 30rem) {
