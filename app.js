@@ -7,6 +7,7 @@ function lerFormulario() {
     artifactId: $("artifactId").value.trim(),
     versao: $("versao").value.trim(),
     descricao: $("descricao").value.trim(),
+    pacote: $("pacote").value.trim(),
     java: Number(marcado("java")),
     war: marcado("empacotamento") === "war",
   };
@@ -18,7 +19,24 @@ function validar(p) {
   if (!/^[A-Za-z0-9_-][A-Za-z0-9_.-]*$/.test(p.artifactId))
     return "Artifact ID inválido. Use letras, números, ponto, hífen ou sublinhado.";
   if (!/^[A-Za-z0-9_.-]+$/.test(p.versao)) return "Versão inválida. Exemplo: 1.0.0-SNAPSHOT";
+  const partes = p.pacote.split(".");
+  if (!/^[a-z_][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$/.test(p.pacote) || partes.some(x => RESERVADAS.has(x)))
+    return "Pacote inválido. Use minúsculas separadas por ponto, sem palavras reservadas do Java. Exemplo: com.exemplo.app";
   return "";
+}
+
+const RESERVADAS = new Set(("abstract assert boolean break byte case catch char class const continue default do double " +
+  "else enum extends final finally float for goto if implements import instanceof int interface long native new " +
+  "package private protected public return short static strictfp super switch synchronized this throw throws " +
+  "transient try void volatile while true false null var record yield sealed permits").split(" "));
+
+// Sugere o pacote a partir de groupId + artifactId: cada parte vira um identificador Java válido.
+function sugerirPacote(groupId, artifactId) {
+  return [...groupId.split("."), artifactId]
+    .map(parte => parte.toLowerCase().replace(/[^a-z0-9_]/g, ""))
+    .filter(Boolean)
+    .map(parte => (/^[0-9]/.test(parte) ? "_" : "") + parte + (RESERVADAS.has(parte) ? "_" : ""))
+    .join(".");
 }
 
 const escaparXml = t => t.replace(/[&<>"']/g,
@@ -31,18 +49,27 @@ function gerarPom(p) {
     <maven.compiler.target>1.8</maven.compiler.target>`
     : `    <maven.compiler.release>${p.java}</maven.compiler.release>`;
 
-  // Em WAR, fixa um plugin recente, que não exige web.xml.
-  const build = p.war ? `
-  <build>
-    <plugins>
-      <plugin>
+  // JAR: o manifest aponta a classe principal, para rodar com "java -jar".
+  // WAR: sem web.xml (Servlet 3+), então desliga a exigência do arquivo.
+  const empacotador = p.war ? `      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
-      </plugin>
-    </plugins>
-  </build>
-` : "";
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>` : `      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${p.pacote}.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>`;
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -61,24 +88,150 @@ function gerarPom(p) {
   <properties>
 ${compilador}
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>5.13.4</junit.version>
   </properties>
-${build}</project>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>\${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.3</version>
+      </plugin>
+${empacotador}
+    </plugins>
+  </build>
+</project>
 `;
 }
 
-// Em hospedagem comum, baixa o pom.xml direto. A página publicada no Claude
-// não permite salvar .xml, então lá o arquivo vai dentro de um .zip.
+// Código-fonte compatível com Java 8 (sem var, sem text blocks), para servir a todas as versões.
+function gerarApp(p) {
+  return `package ${p.pacote};
+
+public class App {
+
+    public static String saudacao(String nome) {
+        return "Olá, " + nome + "!";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(saudacao("Maven"));
+    }
+}
+`;
+}
+
+function gerarTeste(p) {
+  return `package ${p.pacote};
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+class AppTest {
+
+    @Test
+    void saudacaoIncluiONome() {
+        assertEquals("Olá, Maven!", App.saudacao("Maven"));
+    }
+}
+`;
+}
+
+const GITIGNORE = `target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# Sistema
+.DS_Store
+Thumbs.db
+`;
+
+function gerarReadme(p) {
+  const rodar = p.war
+    ? `O pacote gerado fica em \`target/${p.artifactId}-${p.versao}.war\`. Para rodar, publique esse arquivo em um servidor como o Tomcat.`
+    : `Para rodar:
+
+\`\`\`
+java -jar target/${p.artifactId}-${p.versao}.jar
+\`\`\``;
+  return `# ${p.artifactId}
+
+${p.descricao}
+
+## Requisitos
+
+- JDK ${p.java < 11 ? "8" : p.java} ou superior
+- Maven 3.9 ou superior
+
+## Comandos
+
+\`\`\`
+mvn test      # roda os testes
+mvn package   # compila, testa e gera o ${p.war ? "WAR" : "JAR"} em target/
+\`\`\`
+
+${rodar}
+`;
+}
+
+function gerarProjeto(p) {
+  const raiz = p.artifactId + "/";
+  const pasta = p.pacote.replace(/\./g, "/");
+  const arquivos = [
+    { nome: "pom.xml", conteudo: gerarPom(p) },
+    { nome: "README.md", conteudo: gerarReadme(p) },
+    { nome: ".gitignore", conteudo: GITIGNORE },
+    { nome: `src/main/java/${pasta}/App.java`, conteudo: gerarApp(p) },
+    { nome: "src/main/resources/.gitkeep", conteudo: "" },
+    { nome: `src/test/java/${pasta}/AppTest.java`, conteudo: gerarTeste(p) },
+  ];
+  if (p.war) arquivos.push({
+    nome: "src/main/webapp/index.html",
+    conteudo: `<!DOCTYPE html>\n<html lang="pt-BR">\n<head><meta charset="UTF-8"><title>${escaparXml(p.artifactId)}</title></head>\n<body><h1>${escaparXml(p.artifactId)}</h1></body>\n</html>\n`,
+  });
+  return arquivos.map(a => ({ ...a, nome: raiz + a.nome }));
+}
+
+// Baixa o projeto inteiro em .zip. Dentro do Claude, usa a API de downloads da página.
 const apiDownloads = window.claude?.use ? window.claude.use("downloads") : Promise.resolve(null);
 
-async function baixarPom(pom) {
+async function baixarProjeto(p) {
+  const zip = criarZip(gerarProjeto(p));
+  const nome = `${p.artifactId}.zip`;
   const api = await apiDownloads;
   if (api) {
-    await api.save({ filename: "pom.zip", data: criarZip([{ nome: "pom.xml", conteudo: pom }]) });
+    await api.save({ filename: nome, data: zip });
     return;
   }
   const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob([pom], { type: "application/xml" }));
-  link.download = "pom.xml";
+  link.href = URL.createObjectURL(zip);
+  link.download = nome;
   document.body.append(link);
   link.click();
   link.remove();
@@ -117,8 +270,14 @@ function atualizar() {
   realcar();
 }
 
-$("formulario").addEventListener("input", atualizar);
-// Ctrl + Enter (ou Cmd + Enter) baixa o pom.xml de qualquer lugar da página.
+// O pacote acompanha group e artifact até a pessoa editá-lo; se ela apagar, volta a acompanhar.
+let pacoteEditado = false;
+$("formulario").addEventListener("input", e => {
+  if (e.target.id === "pacote") pacoteEditado = e.target.value.trim() !== "";
+  if (!pacoteEditado) $("pacote").value = sugerirPacote($("groupId").value.trim(), $("artifactId").value.trim());
+  atualizar();
+});
+// Ctrl + Enter (ou Cmd + Enter) baixa o projeto de qualquer lugar da página.
 document.addEventListener("keydown", e => {
   if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
     e.preventDefault();
@@ -133,8 +292,8 @@ $("formulario").addEventListener("submit", async e => {
   const p = lerFormulario();
   if (validar(p)) return;
   try {
-    await baixarPom(gerarPom(p));
-    $("aviso").textContent = "pom.xml gerado.";
+    await baixarProjeto(p);
+    $("aviso").textContent = `Projeto ${p.artifactId}.zip baixado.`;
   } catch (erro) {
     $("aviso").textContent = erro?.code === "declined"
       ? "Download cancelado."
