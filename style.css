@@ -1,0 +1,71 @@
+:root {
+  color-scheme: dark;
+  --preto: #0d0c0a;
+  --campo: #1a1814;
+  --texto: #f7f3e8;
+  --cinza: #aca493;
+  --linha: #38332a;
+  --ambar: #ffb000;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  display: grid;
+  grid-template-columns: minmax(0, 30rem) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "titulo painel" "campos painel";
+  min-height: 100vh;
+  margin: 0;
+  background: var(--preto);
+  color: var(--texto);
+  font: .95rem/1.5 "IBM Plex Sans", system-ui, sans-serif;
+}
+form { display: contents; }
+
+header, .campos { padding-inline: clamp(1.25rem, 4vw, 3.5rem); }
+header { grid-area: titulo; padding-top: 3rem; padding-bottom: 2.5rem; }
+h1 { margin: 0; font: 700 2.5rem/1.1 "Bricolage Grotesque", system-ui, sans-serif; letter-spacing: -.02em; }
+header p { margin: .5rem 0 0; color: var(--cinza); }
+
+.campos { grid-area: campos; display: grid; gap: 2.5rem; align-content: start; padding-bottom: 3rem; }
+h2 { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 600; }
+.grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1.1rem; }
+.inteiro, fieldset { grid-column: 1 / -1; }
+
+.campo label, legend { display: block; margin-bottom: .35rem; padding: 0; color: var(--cinza); font-size: .85rem; }
+.campo input { width: 100%; padding: .6rem .75rem; background: var(--campo); border: 1px solid var(--linha); border-radius: 6px; color: var(--texto); font: inherit; }
+.campo input:focus { outline: 3px solid rgb(255 176 0 / .25); border-color: var(--ambar); }
+
+fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+.segmentos { display: flex; padding: 3px; background: var(--campo); border-radius: 8px; }
+.segmentos label { position: relative; flex: 1; padding: .4rem 0; border-radius: 6px; text-align: center; cursor: pointer; }
+.segmentos input { position: absolute; opacity: 0; }
+.segmentos label:has(:checked) { background: var(--ambar); color: var(--preto); font-weight: 600; }
+.segmentos label:has(:focus-visible) { outline: 2px solid var(--texto); outline-offset: 2px; }
+
+.painel { grid-area: painel; position: sticky; top: 0; align-self: start; display: flex; flex-direction: column; height: 100vh; padding: clamp(1.25rem, 3vw, 2.5rem); background: #000; border-left: 1px solid var(--linha); color: var(--texto); }
+.painel-topo { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.painel h2 { margin: 0 auto 0 0; font: 500 1rem "IBM Plex Mono", monospace; }
+
+button { padding: .55rem 1rem; border: 1px solid var(--ambar); border-radius: 6px; background: transparent; color: var(--ambar); font: 600 .9rem "IBM Plex Sans", system-ui, sans-serif; cursor: pointer; }
+button:hover { background: rgb(255 176 0 / .12); }
+button[type="submit"] { background: var(--ambar); color: var(--preto); }
+button[type="submit"]:hover { background: #ffc13d; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button:focus-visible, pre:focus-visible { outline: 2px solid var(--texto); outline-offset: 2px; }
+
+pre { flex: 1; min-height: 0; overflow: auto; margin: 1.5rem 0 0; font: .82rem/1.75 "IBM Plex Mono", monospace; }
+/* O valor do campo em edição aparece marcado dentro do pom.xml. */
+mark { border-radius: 3px; background: transparent; color: var(--ambar); font-weight: 500; text-decoration: underline; text-underline-offset: 3px; transition: background .15s; }
+mark.ativo { background: var(--ambar); color: var(--preto); text-decoration: none; }
+
+#erro, #aviso { margin: .75rem 0 0; }
+#erro:empty, #aviso:empty { display: none; }
+
+@media (max-width: 56rem) {
+  body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "titulo" "campos" "painel"; }
+  .painel { position: static; height: auto; border-left: 0; border-top: 1px solid var(--linha); }
+  pre { max-height: 26rem; }
+}
+@media (prefers-reduced-motion: reduce) { mark { transition: none; } }

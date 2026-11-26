@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Oficina Maven</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Oficina Maven</h1>
+    <p>Gere um pom.xml padrão em segundos.</p>
+  </header>
+
+  <form id="formulario" novalidate>
+    <div class="campos">
+      <section>
+        <h2>Projeto</h2>
+        <div class="grade">
+          <div class="campo">
+            <label for="groupId">Group ID</label>
+            <input id="groupId" value="com.exemplo" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="campo">
+            <label for="artifactId">Artifact ID</label>
+            <input id="artifactId" value="meu-projeto" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="campo inteiro">
+            <label for="versao">Versão</label>
+            <input id="versao" value="1.0.0-SNAPSHOT" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="campo inteiro">
+            <label for="descricao">Descrição</label>
+            <input id="descricao" value="Projeto Java com Maven" autocomplete="off">
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Configuração</h2>
+        <div class="grade">
+          <fieldset>
+          <legend>Versão do Java</legend>
+          <div class="segmentos">
+            <label class="opcao"><input type="radio" name="java" value="8"> 8</label>
+            <label class="opcao"><input type="radio" name="java" value="11"> 11</label>
+            <label class="opcao"><input type="radio" name="java" value="17" checked> 17</label>
+            <label class="opcao"><input type="radio" name="java" value="21"> 21</label>
+            <label class="opcao"><input type="radio" name="java" value="25"> 25</label>
+          </div>
+          </fieldset>
+          <fieldset>
+          <legend>Empacotamento</legend>
+          <div class="segmentos">
+            <label class="opcao"><input type="radio" name="empacotamento" value="jar" checked> JAR</label>
+            <label class="opcao"><input type="radio" name="empacotamento" value="war"> WAR</label>
+          </div>
+          </fieldset>
+        </div>
+      </section>
+    </div>
+
+    <aside class="painel">
+      <div class="painel-topo">
+        <h2>pom.xml</h2>
+        <button type="button" id="copiar">Copiar</button>
+        <button type="submit">Baixar pom.xml</button>
+      </div>
+      <p id="erro" role="alert"></p>
+      <p id="aviso" role="status"></p>
+      <pre id="previa" tabindex="0"></pre>
+    </aside>
+  </form>
+
+  <script src="zip.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
