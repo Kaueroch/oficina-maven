@@ -152,3 +152,19 @@ $("copiar").addEventListener("click", async () => {
 });
 
 atualizar();
+
+// Tema claro/escuro: sem escolha salva, segue o sistema.
+const sistemaEscuro = matchMedia("(prefers-color-scheme: dark)");
+const temaAtual = () => document.documentElement.dataset.theme || (sistemaEscuro.matches ? "dark" : "light");
+
+function marcarTema() {
+  document.querySelectorAll("[data-tema]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.tema === temaAtual())));
+}
+
+document.querySelectorAll("[data-tema]").forEach(botao => botao.addEventListener("click", () => {
+  document.documentElement.dataset.theme = botao.dataset.tema;
+  try { localStorage.setItem("tema", botao.dataset.tema === "dark" ? "escuro" : "claro"); } catch {}
+  marcarTema();
+}));
+sistemaEscuro.addEventListener("change", marcarTema);
+marcarTema();

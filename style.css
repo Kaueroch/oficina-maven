@@ -11,6 +11,32 @@
   --altura-barra: 5.5rem;
 }
 
+/* Tema escuro: segue o sistema, a menos que a pessoa escolha no botão. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --fundo: #1b1f23;
+    --texto: #f1f3f4;
+    --apagado: #a3abb3;
+    --linha: #353b41;
+    --verde: #7cc24e;
+    --verde-claro: rgb(124 194 78 / .22);
+    --barra: #262b30;
+    --erro: #ff7a7f;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --fundo: #1b1f23;
+  --texto: #f1f3f4;
+  --apagado: #a3abb3;
+  --linha: #353b41;
+  --verde: #7cc24e;
+  --verde-claro: rgb(124 194 78 / .22);
+  --barra: #262b30;
+  --erro: #ff7a7f;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -23,7 +49,27 @@ body {
 form { max-width: 92rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2.5rem) calc(var(--altura-barra) + 2rem); }
 
 /* Cabeçalho */
-.topo { padding: 1.75rem 0 1.5rem; border-bottom: 1px solid var(--linha); }
+.topo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.75rem 0 1.5rem; border-bottom: 1px solid var(--linha); }
+
+/* Alternador de tema: dois quadrados empilhados, o ativo fica preenchido. */
+.tema { display: flex; flex-direction: column; border: 2px solid var(--texto); border-radius: 2px; }
+.tema button {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  min-height: 0;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--fundo);
+  color: var(--texto);
+}
+.tema button + button { border-top: 2px solid var(--texto); }
+.tema button[aria-pressed="true"] { background: var(--texto); color: var(--fundo); }
+.tema button:hover:not([aria-pressed="true"]) { background: var(--verde-claro); color: var(--texto); }
+.tema svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.tema button[data-tema="dark"] svg { fill: currentColor; stroke: none; }
 h1 { margin: 0; font-size: clamp(1.9rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -.01em; line-height: 1; }
 .marca { color: var(--verde); font-weight: 500; }
 

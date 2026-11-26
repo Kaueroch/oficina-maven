@@ -25,9 +25,12 @@
 - fundo #ffffff | texto #1b1f23 | apagado #5e6670 | linha #dde5e5
 - verde #5fa134 (selection, focus, values in the pom) | verde-claro #e3f1d8 (field being edited)
 - barra #ebf1f1 | erro #c0262d
+- Dark: fundo #1b1f23 | texto #f1f3f4 | apagado #a3abb3 | linha #353b41 | verde #7cc24e | barra #262b30 | erro #ff7a7f
+- Theme: follows the system; the sun/moon toggle in the header saves the choice in localStorage
 
 ## Changelog
 
 - v1: work order pad
 - v2: more colour
 - v3: Spring Initializr-style layout, at the user's request
+- v4: light/dark theme toggle
