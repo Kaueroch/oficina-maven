@@ -113,18 +113,18 @@ function atualizar() {
   $("aviso").textContent = "";
   if (erro) $("previa").textContent = "Corrija o formulário para ver a prévia.";
   else $("previa").innerHTML = marcarValores(gerarPom(p));
-  const parte = (campo, valor) => `<mark data-campo="${campo}">${escaparXml(valor || "…")}</mark>`;
-  $("coordenada").innerHTML = [parte("groupId", p.groupId), parte("artifactId", p.artifactId), parte("versao", p.versao)]
-    .join(":");
-  // Número da ordem derivado da coordenada: muda junto com o projeto.
-  const numero = [...`${p.groupId}:${p.artifactId}:${p.versao}`]
-    .reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % 1e6;
-  $("numero").textContent = String(numero).padStart(6, "0");
   document.querySelectorAll('button[type="submit"], #copiar').forEach(b => b.disabled = Boolean(erro));
   realcar();
 }
 
 $("formulario").addEventListener("input", atualizar);
+// Ctrl + Enter (ou Cmd + Enter) baixa o pom.xml de qualquer lugar da página.
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    $("formulario").requestSubmit();
+  }
+});
 $("formulario").addEventListener("focusin", realcar);
 $("formulario").addEventListener("focusout", () => setTimeout(realcar));
 

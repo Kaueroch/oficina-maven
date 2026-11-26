@@ -4,80 +4,70 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oficina Maven</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Courier+Prime:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="balcao">
-    <form id="formulario" class="talao" novalidate>
+  <form id="formulario" novalidate>
+    <header class="topo">
+      <h1><span class="marca">oficina</span> maven</h1>
+    </header>
 
-      <section class="via via-1" aria-labelledby="titulo">
-        <header class="cabecalho">
-          <div>
-            <h1 id="titulo">Oficina Maven</h1>
-            <p class="tipo">Ordem de serviço: pom.xml</p>
-          </div>
-          <p class="numero" aria-label="Número da ordem">Nº <span id="numero">000000</span></p>
-        </header>
-
-        <p class="instrucao">Preencha os dados do projeto. A 2ª via sai pronta como pom.xml.</p>
-
-        <div class="grade">
-          <div class="celula larga">
-            <label for="groupId">Group ID</label>
+    <main class="colunas">
+      <div class="esquerda">
+        <section>
+          <h2>Dados do projeto</h2>
+          <div class="linha">
+            <label for="groupId">Group</label>
             <input id="groupId" value="com.exemplo" autocomplete="off" spellcheck="false">
           </div>
-          <div class="celula larga">
-            <label for="artifactId">Artifact ID</label>
+          <div class="linha">
+            <label for="artifactId">Artifact</label>
             <input id="artifactId" value="meu-projeto" autocomplete="off" spellcheck="false">
           </div>
-          <div class="celula">
+          <div class="linha">
             <label for="versao">Versão</label>
             <input id="versao" value="1.0.0-SNAPSHOT" autocomplete="off" spellcheck="false">
           </div>
-          <div class="celula dupla">
+          <div class="linha">
             <label for="descricao">Descrição</label>
             <input id="descricao" value="Projeto Java com Maven" autocomplete="off">
           </div>
-
-          <fieldset class="celula dupla">
-            <legend>Versão do Java</legend>
-            <div class="opcoes">
-              <label><input type="radio" name="java" value="8"> 8</label>
-              <label><input type="radio" name="java" value="11"> 11</label>
-              <label><input type="radio" name="java" value="17" checked> 17</label>
-              <label><input type="radio" name="java" value="21"> 21</label>
-              <label><input type="radio" name="java" value="25"> 25</label>
-            </div>
-          </fieldset>
-          <fieldset class="celula">
+          <fieldset class="linha">
             <legend>Empacotamento</legend>
             <div class="opcoes">
-              <label><input type="radio" name="empacotamento" value="jar" checked> JAR</label>
-              <label><input type="radio" name="empacotamento" value="war"> WAR</label>
+              <label><input type="radio" name="empacotamento" value="jar" checked> Jar</label>
+              <label><input type="radio" name="empacotamento" value="war"> War</label>
             </div>
           </fieldset>
-        </div>
-      </section>
+          <fieldset class="linha">
+            <legend>Java</legend>
+            <div class="opcoes">
+              <label><input type="radio" name="java" value="25"> 25</label>
+              <label><input type="radio" name="java" value="21"> 21</label>
+              <label><input type="radio" name="java" value="17" checked> 17</label>
+              <label><input type="radio" name="java" value="11"> 11</label>
+              <label><input type="radio" name="java" value="8"> 8</label>
+            </div>
+          </fieldset>
+        </section>
+      </div>
 
-      <aside class="via via-2" aria-labelledby="titulo-via">
-        <div class="via-topo">
-          <div>
-            <h2 id="titulo-via">2ª via: pom.xml</h2>
-            <p id="coordenada" class="coordenada" title="Coordenada Maven do projeto"></p>
-          </div>
-          <div class="acoes">
-            <button type="button" id="copiar">Copiar</button>
-            <button type="submit">Baixar pom.xml</button>
-          </div>
+      <aside class="direita">
+        <div class="direita-topo">
+          <h2>pom.xml</h2>
         </div>
         <p id="erro" role="alert"></p>
         <p id="aviso" role="status"></p>
         <pre id="previa" tabindex="0" aria-label="Prévia do pom.xml"></pre>
       </aside>
+    </main>
 
-    </form>
-  </main>
+    <footer class="barra">
+      <button type="submit"><strong>Baixar</strong> <span class="atalho">Ctrl + ⏎</span></button>
+      <button type="button" id="copiar"><strong>Copiar</strong></button>
+    </footer>
+  </form>
 
   <script src="zip.js"></script>
   <script src="app.js"></script>

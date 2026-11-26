@@ -1,220 +1,144 @@
-/* Talão de ordem de serviço: impresso em tinta vermelha, valores batidos à máquina,
-   vias coloridas (amarela, rosa, azul) e marca-texto verde fluorescente. */
 :root {
   color-scheme: light;
-  --balcao: #11727b;
-  --papel: #fffefa;
-  --canario: #ffe866;
-  --rosa: #ffb3c7;
-  --azul: #9fd6f7;
-  --tinta: #c41f2b;
-  --tinta-escura: #9c1520;
-  --tinta-clara: rgb(196 31 43 / .08);
-  --maquina: #1e2026;
-  --carbono: #283a63;
-  --numerador: #0b6ea8;
-  --marca-texto: #b8f53d;
-  --sombra: 0 2px 3px rgb(4 40 44 / .3), 0 16px 28px -12px rgb(4 40 44 / .6);
-
-  --fonte-impressa: "Archivo", "Arial Narrow", sans-serif;
-  --fonte-maquina: "Courier Prime", "Courier New", monospace;
+  --fundo: #ffffff;
+  --texto: #1b1f23;
+  --apagado: #5e6670;
+  --linha: #dde5e5;
+  --verde: #5fa134;
+  --verde-claro: #e3f1d8;
+  --barra: #ebf1f1;
+  --erro: #c0262d;
+  --altura-barra: 5.5rem;
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background: var(--balcao);
-  color: var(--maquina);
-  font: 1rem/1.5 var(--fonte-impressa);
+  background: var(--fundo);
+  color: var(--texto);
+  font: 1rem/1.5 "Karla", "Helvetica Neue", Arial, sans-serif;
 }
 
-.balcao { padding: clamp(1rem, 4vw, 3.5rem) clamp(1rem, 3vw, 2.5rem) 4rem; }
+form { max-width: 92rem; margin: 0 auto; padding: 0 clamp(1rem, 3vw, 2.5rem) calc(var(--altura-barra) + 2rem); }
 
-/* As duas vias lado a lado; a 2ª fica um pouco mais baixa, como folha destacada. */
-.talao {
+/* Cabeçalho */
+.topo { padding: 1.75rem 0 1.5rem; border-bottom: 1px solid var(--linha); }
+h1 { margin: 0; font-size: clamp(1.9rem, 4vw, 2.4rem); font-weight: 700; letter-spacing: -.01em; line-height: 1; }
+.marca { color: var(--verde); font-weight: 500; }
+
+/* Duas colunas com divisória vertical */
+.colunas { display: grid; grid-template-columns: minmax(0, 46rem) minmax(0, 1fr); padding-top: 2rem; }
+.esquerda { padding-right: clamp(1.5rem, 3vw, 3rem); }
+.direita { display: flex; flex-direction: column; min-width: 0; padding-left: clamp(1.5rem, 3vw, 2.5rem); border-left: 1px solid var(--linha); }
+
+h2 { margin: 0 0 1rem; font-size: 1.15rem; font-weight: 700; }
+
+/* Linhas rótulo + campo, rótulo alinhado à direita */
+.linha {
   display: grid;
-  grid-template-columns: minmax(0, 34rem) minmax(0, 40rem);
-  justify-content: center;
-  align-items: start;
-  gap: clamp(1rem, 3vw, 2.5rem);
-}
-
-.via {
-  position: relative;
-  padding: 2.25rem clamp(1rem, 3vw, 1.75rem) 1.75rem;
-  box-shadow: var(--sombra);
-}
-/* Picote no topo de cada via. */
-.via::before {
-  content: "";
-  position: absolute;
-  inset: .85rem 0 auto;
-  border-top: 2px dotted rgb(30 32 38 / .28);
-}
-.via-1 { background: var(--papel); }
-.via-2 {
-  position: sticky;
-  top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 3rem - 14px);
-  margin: 3rem 14px 0 0;
-  background: var(--canario);
-  /* 3ª via rosa e 4ª via azul, levemente desalinhadas atrás da amarela. */
-  box-shadow: 7px 7px 0 var(--rosa), 14px 14px 0 var(--azul), var(--sombra);
-}
-
-/* Cabeçalho impresso da gráfica */
-.cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1rem;
-  margin: 0 calc(-1 * clamp(1rem, 3vw, 1.75rem));
-  padding: .85rem clamp(1rem, 3vw, 1.75rem);
-  background: var(--tinta);
-  color: var(--papel);
-}
-h1 {
-  margin: 0;
-  font-size: clamp(1.9rem, 5vw, 2.6rem);
-  font-weight: 800;
-  font-stretch: 68%;
-  line-height: .95;
-  letter-spacing: -.01em;
-}
-.tipo { margin: .3rem 0 0; font-weight: 600; font-stretch: 85%; }
-.numero {
-  margin: 0;
-  padding: .3rem .5rem;
-  background: var(--papel);
-  color: var(--numerador);
-  font: 700 1.35rem/1 var(--fonte-maquina);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-.instrucao { margin: .9rem 0 1.25rem; color: var(--tinta); font-size: .9rem; font-stretch: 90%; }
-
-/* Grade de células do formulário: linhas de tinta, rótulo pequeno no canto. */
-.grade {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  border-top: 1.5px solid var(--tinta);
-  border-left: 1.5px solid var(--tinta);
-}
-.celula {
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1.25rem;
   min-width: 0;
-  margin: 0;
-  padding: .4rem .6rem .5rem;
-  border: 0;
-  border-right: 1.5px solid var(--tinta);
-  border-bottom: 1.5px solid var(--tinta);
-}
-.larga { grid-column: span 3; }
-.dupla { grid-column: span 2; }
-.celula:focus-within { background: var(--tinta-clara); }
-
-.celula > label, legend {
-  display: block;
+  margin: 0 0 1.1rem;
   padding: 0;
-  color: var(--tinta);
-  font-size: .78rem;
-  font-weight: 600;
-  font-stretch: 85%;
+  border: 0;
 }
-legend { float: left; width: 100%; }
+.linha > label, legend { padding: 0; text-align: right; font-size: .95rem; }
+/* legend não entra no grid; o float + largura fixa o coloca na coluna dos rótulos. */
+fieldset.linha { display: block; }
+fieldset.linha legend { float: left; width: 7.5rem; margin-right: 1.25rem; padding-top: .15rem; }
 
-.celula input:not([type="radio"]) {
+.linha input:not([type="radio"]) {
   width: 100%;
-  padding: .2rem 0 0;
+  padding: .35rem 0 .45rem;
   background: transparent;
   border: 0;
-  color: var(--maquina);
-  font: 1.05rem/1.4 var(--fonte-maquina);
+  border-bottom: 3px solid var(--texto);
+  border-radius: 0;
+  color: var(--texto);
+  font: inherit;
 }
-.celula input:not([type="radio"]):focus { outline: none; }
-.celula:has(input:not([type="radio"]):focus-visible) { box-shadow: inset 0 0 0 2px var(--tinta); }
+.linha input:not([type="radio"]):hover { border-bottom-color: var(--apagado); }
+.linha input:not([type="radio"]):focus { outline: none; border-bottom-color: var(--verde); }
 
-/* Quadradinhos impressos; o marcado leva um X batido à máquina. */
-.opcoes { clear: both; display: flex; flex-wrap: wrap; gap: .25rem 1rem; padding-top: .3rem; }
-.opcoes label { display: inline-flex; align-items: center; gap: .4rem; min-height: 2rem; font: 1.05rem var(--fonte-maquina); cursor: pointer; }
+/* Rádios: círculo vazado; marcado vira bolinha verde e o texto fica verde. */
+.opcoes { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; }
+.opcoes label { display: inline-flex; align-items: center; gap: .6rem; min-height: 1.75rem; cursor: pointer; }
 .opcoes input {
   appearance: none;
-  display: grid;
-  place-content: center;
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1rem;
+  height: 1rem;
   margin: 0;
-  border: 1.5px solid var(--tinta);
-  background: var(--papel);
+  border: 2px solid var(--texto);
+  border-radius: 50%;
   cursor: pointer;
 }
-.opcoes input::after { content: "X"; font: 700 1rem/1 var(--fonte-maquina); color: var(--maquina); opacity: 0; }
-.opcoes input:checked::after { opacity: 1; }
-.opcoes label:has(:checked) { padding: 0 .35rem; margin: 0 -.35rem; background: var(--marca-texto); }
-.opcoes label:hover input { background: var(--tinta-clara); }
-.opcoes input:focus-visible { outline: 2px solid var(--tinta); outline-offset: 2px; }
+.opcoes input:checked { border-color: var(--verde); background: var(--verde); }
+.opcoes label:has(:checked) { color: var(--verde); }
+.opcoes label:hover input:not(:checked) { border-color: var(--verde); }
+.opcoes input:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
 
-/* 2ª via */
-.via-topo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: .75rem 1rem; padding-bottom: .75rem; border-bottom: 3px solid var(--tinta); }
-h2 { margin: 0; color: var(--tinta); font-size: 1.15rem; font-weight: 800; font-stretch: 75%; }
-.coordenada { margin: .2rem 0 0; color: var(--carbono); font: .9rem var(--fonte-maquina); overflow-wrap: anywhere; }
-.coordenada mark { background: transparent; color: inherit; }
-.coordenada mark.ativo { background: var(--marca-texto); color: var(--maquina); }
-.acoes { display: flex; gap: .5rem; }
+/* Coluna da prévia */
+.direita-topo { display: flex; align-items: center; min-height: 2.75rem; padding-bottom: .9rem; margin-bottom: 1rem; border-bottom: 1px solid var(--linha); }
+.direita-topo h2 { margin: 0; }
 
-button {
-  min-height: 2.5rem;
-  padding: .45rem 1rem;
-  border: 1.5px solid var(--tinta);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--tinta);
-  font: 700 .95rem var(--fonte-impressa);
-  font-stretch: 90%;
-  cursor: pointer;
-}
-button:hover { background: var(--tinta-clara); }
-button:active { transform: translateY(1px); }
-button[type="submit"] { background: var(--tinta); color: var(--papel); }
-button[type="submit"]:hover { border-color: var(--tinta-escura); background: var(--tinta-escura); }
-button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-button:focus-visible, pre:focus-visible { outline: 2px solid var(--maquina); outline-offset: 2px; }
-
-/* A cópia em carbono: um pouco borrada e azulada; os valores saem mais fortes. */
 pre {
   flex: 1;
-  min-height: 0;
+  max-height: calc(100vh - var(--altura-barra) - 14rem);
+  min-height: 12rem;
   overflow: auto;
-  margin: 1rem 0 0;
-  color: var(--carbono);
-  font: .85rem/1.75 var(--fonte-maquina);
-  text-shadow: 0 0 .6px rgb(47 60 87 / .6);
+  margin: 0;
+  color: var(--texto);
+  font: .82rem/1.7 "JetBrains Mono", ui-monospace, monospace;
 }
-pre mark { padding: 0 .1em; background: transparent; color: var(--maquina); font-weight: 700; transition: background-color .15s ease-out; }
-/* O campo em edição aparece grifado com marca-texto na via. */
-pre mark.ativo { background: var(--marca-texto); }
+pre mark { padding: 0 .1em; border-radius: 2px; background: transparent; color: var(--verde); font-weight: 700; transition: background-color .15s ease-out; }
+pre mark.ativo { background: var(--verde-claro); }
 
-#erro, #aviso { margin: .75rem 0 0; font-size: .95rem; }
-#erro { color: var(--tinta); font-weight: 700; }
-#aviso { color: var(--tinta); font-weight: 600; }
+#erro, #aviso { margin: 0 0 .75rem; font-style: italic; }
+#erro { color: var(--erro); }
+#aviso { color: var(--apagado); }
 #erro:empty, #aviso:empty { display: none; }
 
-@media (max-width: 62rem) {
-  .talao { grid-template-columns: minmax(0, 40rem); }
-  .via-2 { position: static; margin-top: 0; max-height: none; }
-  .talao { padding-bottom: 14px; }
-  pre { max-height: 30rem; }
+/* Barra de ações fixa no rodapé */
+.barra {
+  position: fixed;
+  inset: auto 0 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--barra);
+}
+button {
+  min-height: 3rem;
+  padding: .6rem 1.5rem;
+  border: 2px solid var(--texto);
+  border-radius: 2px;
+  background: var(--fundo);
+  color: var(--texto);
+  font: 1rem "Karla", "Helvetica Neue", Arial, sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+button strong { font-weight: 700; }
+.atalho { margin-left: .6rem; }
+button:hover { background: var(--texto); color: var(--fundo); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:disabled:hover { background: var(--fundo); color: var(--texto); }
+button:focus-visible, pre:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+
+@media (max-width: 60rem) {
+  .colunas { grid-template-columns: minmax(0, 1fr); }
+  .esquerda { padding-right: 0; }
+  .direita { padding: 1.5rem 0 0; border-left: 0; border-top: 1px solid var(--linha); }
+  pre { max-height: 28rem; }
 }
 @media (max-width: 30rem) {
-  .grade { grid-template-columns: minmax(0, 1fr); }
-  .larga, .dupla { grid-column: auto; }
-  .cabecalho { flex-direction: column; align-items: flex-start; }
+  .linha { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
+  .linha > label { text-align: left; }
+  fieldset.linha legend { float: none; width: auto; margin: 0 0 .25rem; text-align: left; }
+  .atalho { display: none; }
 }
-@media (prefers-reduced-motion: reduce) {
-  pre mark { transition: none; }
-  button:active { transform: none; }
-}
+@media (prefers-reduced-motion: reduce) { pre mark { transition: none; } }

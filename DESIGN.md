@@ -1,48 +1,33 @@
 # DESIGN.md - Oficina Maven
 
-## Context (from discovery)
+## Context
 
 - Artifact type: functional tool (pom.xml generator)
-- Positioning: utilitarian, a little playful
 - Audience: Java devs starting a Maven project | Primary action: download the pom.xml
-- Adjectives: workshop-like, direct, trustworthy, analog
-- Aesthetic essence: printed work order
+- Reference requested by the user: the layout of the Spring Initializr (start.spring.io). We follow the structure and the feel, without using the Spring logo, name or brand.
 - Mode: light | Density: balanced
 
 ## Aesthetic
 
-- Direction: borrowed form, the carbonless pad of a Brazilian auto-shop work order
-- Defining trait: every element is part of the printed form; red ink with a filled header band, typewritten values, coloured copies
-- Signature move: the 2nd copy on canary-yellow paper is the pom.xml, as a carbon copy; the pink and blue copies are fanned out behind it, and the field being edited is highlighted with fluorescent highlighter
+- Header with the wordmark ("oficina" in green, "maven" in bold black) and a rule below it
+- Two columns: options on the left, pom.xml preview on the right, with a vertical divider
+- Label + field rows, label aligned right, field underlined with a 3px black line
+- Radios: hollow black circle; selected becomes a green dot with green text
+- Action bar fixed at the bottom (light grey-green background), buttons with a 2px black outline, uppercase text, shortcut next to them
 
 ## Typography
 
-- Printed form: Archivo (Google, OFL), width axis condensed at 62-90% for headers and labels
-- Typewritten values and code: Courier Prime (Google, OFL)
-- Scale: base 16px; labels .78rem, body .9-1.05rem, h2 1.15rem, h1 1.9-2.6rem
+- Interface: Karla (Google, OFL)
+- Code: JetBrains Mono (Google, OFL)
 
 ## Color
 
-- balcao (page bg, petrol teal): #11727b
-- papel (1st copy): #fffefa | canario (2nd copy): #ffe866 | rosa (3rd copy): #ffb3c7 | azul (4th copy): #9fd6f7
-- tinta (red print ink, header band, primary action, errors): #c41f2b
-- maquina (typed values): #1e2026 | carbono (carbon-copy text): #283a63
-- numerador (form number): #0b6ea8
-- marca-texto (fluorescent highlighter: active field, checked option): #b8f53d
-
-## Rules
-
-- Radius: 2px on buttons, 0 elsewhere (paper and printed cells)
-- Shadow: only on the sheets (soft elevation, no border)
-- Borders: 1.5px ink on cells, 3px ink under headers
-- Motion: only 150ms ease-out on the highlighter; respects prefers-reduced-motion
-- Focus: cell tinted plus 2px inset ink; checkboxes with 2px outline
-
-## Slop audit (v1)
-
-- Avoided: dark theme with a single accent, generic fonts, eyebrows, SaaS cards, mono for small labels
-- Pending: check the render in a browser (no browser was available when it was built)
+- fundo #ffffff | texto #1b1f23 | apagado #5e6670 | linha #dde5e5
+- verde #5fa134 (selection, focus, values in the pom) | verde-claro #e3f1d8 (field being edited)
+- barra #ebf1f1 | erro #c0262d
 
 ## Changelog
 
-- v2: more colour (red ink, coloured copies, teal counter, green highlighter)
+- v1: work order pad
+- v2: more colour
+- v3: Spring Initializr-style layout, at the user's request
