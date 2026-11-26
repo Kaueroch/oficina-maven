@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Oficina Maven</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main class="pagina">
   <header>
     <h1>Oficina Maven</h1>
-    <p>Gere um pom.xml padrão em segundos.</p>
+    <p>Preencha os dados do projeto e baixe um pom.xml pronto para o Maven.</p>
+    <p id="coordenada" class="coordenada" title="Coordenada Maven do projeto"></p>
   </header>
 
   <form id="formulario" novalidate>
@@ -72,6 +74,7 @@
       <pre id="previa" tabindex="0"></pre>
     </aside>
   </form>
+  </main>
 
   <script src="zip.js"></script>
   <script src="app.js"></script>

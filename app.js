@@ -113,6 +113,9 @@ function atualizar() {
   $("aviso").textContent = "";
   if (erro) $("previa").textContent = "Corrija o formulário para ver a prévia.";
   else $("previa").innerHTML = marcarValores(gerarPom(p));
+  const parte = (campo, valor) => `<mark data-campo="${campo}">${escaparXml(valor || "…")}</mark>`;
+  $("coordenada").innerHTML = [parte("groupId", p.groupId), parte("artifactId", p.artifactId), parte("versao", p.versao)]
+    .join('<span class="dois-pontos">:</span>');
   document.querySelectorAll('button[type="submit"], #copiar').forEach(b => b.disabled = Boolean(erro));
   realcar();
 }
